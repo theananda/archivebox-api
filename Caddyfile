@@ -1,7 +1,9 @@
 :{$PORT} {
+    # Route /api/... requests to our FastAPI wrapper
     handle_path /api/* {
         reverse_proxy localhost:9000
     }
+    # Route everything else to the ArchiveBox UI
     handle {
         reverse_proxy localhost:8000
     }
