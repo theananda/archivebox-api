@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# 1. Initialize ArchiveBox (Safe to run every time, it won't overwrite existing data)
+# Initialize ArchiveBox (only sets up if /data is empty)
 archivebox init --setup
 
-# 2. Start ArchiveBox UI on port 8000
+# Start ArchiveBox UI in background
 archivebox server 0.0.0.0:8000 &
 
-# 3. Start the FastAPI Wrapper on port 9000
-# We use /app/api.py because that's where we copied it
+# Start the FastAPI Wrapper in background
+# We run it from /app where api.py is located
 cd /app && uvicorn api:app --host 0.0.0.0 --port 9000 &
 
-# 4. Start Caddy in the foreground (this keeps the container running)
-# Caddy will listen on the Railway $PORT and proxy to 8000 or 9000
+# Start Caddy in the foreground to keep the container alive
 caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
